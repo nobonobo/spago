@@ -49,8 +49,6 @@ func (n *Node) apply(nn *Node) {
 	nn.children = append(nn.children, n)
 }
 
-var Count int = 0
-
 // Render ...
 func (n *Node) html(bind bool) js.Value {
 	var jsv js.Value
@@ -97,7 +95,6 @@ func (n *Node) html(bind bool) js.Value {
 			})
 			binds = append(binds, binded{l.Name, fn})
 			jsv.Call("addEventListener", l.Name, fn)
-			Count++
 		}
 	}
 	var cb js.Func
@@ -114,7 +111,6 @@ func (n *Node) html(bind bool) js.Value {
 		for _, b := range binds {
 			jsv.Call("removeEventListener", b.name, b.fn)
 			b.fn.Release()
-			Count--
 		}
 		return nil
 	})
