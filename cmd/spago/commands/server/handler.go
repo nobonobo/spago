@@ -48,10 +48,10 @@ const indexHTML = `<!DOCTYPE html>
 
 // DevHandler ...
 type DevHandler struct {
-	goCmd        string
-	wasmExecPath string
-	workDir      string
-	tempDir      string
+	GoCmd        string
+	WasmExecPath string
+	WorkDir      string
+	TempDir      string
 }
 
 type counter struct {
@@ -96,7 +96,7 @@ func serveGZipedFile(w http.ResponseWriter, r *http.Request, fpath string) error
 
 func (dh *DevHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	dir, base := path.Split(r.URL.Path)
-	dir = filepath.Join(dh.workDir, filepath.Clean(dir))
+	dir = filepath.Join(dh.WorkDir, filepath.Clean(dir))
 	if len(base) == 0 {
 		base = "index.html"
 	}
@@ -114,7 +114,7 @@ func (dh *DevHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprint(w, indexHTML)
 		return
 	case "wasm_exec.js":
-		http.ServeFile(w, r, dh.wasmExecPath)
+		http.ServeFile(w, r, dh.WasmExecPath)
 		return
 	case "main.wasm":
 		err := serveGZipedFile(w, r, fpath)
@@ -122,7 +122,7 @@ func (dh *DevHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		log.Println(err)
-		output := filepath.Join(dh.tempDir, "main.wasm")
+		output := filepath.Join(dh.TempDir, "main.wasm")
 		args := []string{"go", "generate", "-v", "./..."}
 		out, err := commands.RunCmd(dir, []string{"GOOS=js", "GOARCH=wasm"}, args...)
 		if err != nil {
@@ -131,9 +131,9 @@ func (dh *DevHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		log.Println(out)
-		args = []string{dh.goCmd, "build", "-o", output, "."}
-		if dh.goCmd == "tinygo" {
-			args = []string{dh.goCmd, "build", "-target", "wasm", "-o", output, "."}
+		args = []string{dh.GoCmd, "build", "-o", output, "."}
+		if dh.GoCmd == "tinygo" {
+			args = []string{dh.GoCmd, "build", "-target", "wasm", "-o", output, "."}
 		}
 		out, err = commands.RunCmd(dir, []string{"GOOS=js", "GOARCH=wasm"}, args...)
 		if err != nil {

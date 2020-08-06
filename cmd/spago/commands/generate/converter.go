@@ -102,7 +102,7 @@ func (c *Converter) attrs(attrSlice []attr, indent int) string {
 				if !ok {
 					log.Panicf("event value format expected @%s=\"{{raw}}\": got %q", name, v)
 				}
-				res = append(res, fmt.Sprintf("\n%s%s,", tab0, name, p))
+				res = append(res, fmt.Sprintf("\n%s%s,", tab0, p))
 			}
 		default:
 			p, ok := replaceValue(v)

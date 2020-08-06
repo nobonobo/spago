@@ -2,6 +2,18 @@ package spago
 
 import "syscall/js"
 
+type none struct{}
+
+func (m none) apply(n *Node) {}
+
+// If ...
+func If(cond bool, m Markup) Markup {
+	if cond {
+		return m
+	}
+	return none{}
+}
+
 // attribute attribute
 type attribute struct {
 	Key   string

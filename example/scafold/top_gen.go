@@ -12,10 +12,10 @@ func (c *Top) Render() spago.HTML {
 				spago.T("Title"),
 			),
 			spago.Tag("p", 				
-				spago.A("$", "a"),
-				spago.A("$", "b"),
-				spago.T("hello world!"),
+				spago.ClassMap{},
+				spago.T(c.Title),
 			),
+			spago.C(&Part{}),
 		),
 	)
 }

@@ -85,18 +85,18 @@ func (s *Server) Execute(args []string) error {
 		return err
 	}
 	dh := &DevHandler{
-		goCmd:        "go",
-		wasmExecPath: filepath.Join(runtime.GOROOT(), "misc", "wasm", "wasm_exec.js"),
-		workDir:      d,
-		tempDir:      tempDir,
+		GoCmd:        "go",
+		WasmExecPath: filepath.Join(runtime.GOROOT(), "misc", "wasm", "wasm_exec.js"),
+		WorkDir:      d,
+		TempDir:      tempDir,
 	}
 	if s.isTinyGo {
-		dh.goCmd = "tinygo"
+		dh.GoCmd = "tinygo"
 		output, err := commands.RunCmd(d, nil, "tinygo", "env", "TINYGOROOT")
 		if err != nil {
 			return err
 		}
-		dh.wasmExecPath = filepath.Join(strings.TrimSpace(output), "targets", "wasm_exec.js")
+		dh.WasmExecPath = filepath.Join(strings.TrimSpace(output), "targets", "wasm_exec.js")
 	}
 	http.Handle("/", dh)
 	return http.Serve(l, nil)
