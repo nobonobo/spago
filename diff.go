@@ -113,25 +113,6 @@ func (p Patches) Do() {
 	for _, patch := range p {
 		patch.Func(patch.Args...)
 	}
-	/*
-		parent := node.Get("parentNode")
-		if parent.IsUndefined() {
-			log.Println("no parent:")
-			for _, patch := range p {
-				log.Printf("patch: %T,%v", patch.Func, patch.Args)
-				patch.Func(patch.Args...)
-			}
-			return
-		}
-		index := getNodeIndex(node)
-		frag := document.Call("createDocumentFragment")
-		frag.Call("appendChild", node)
-		for _, patch := range p {
-			log.Printf("patch: %T,%v", patch.Func, patch.Args)
-			patch.Func(patch.Args...)
-		}
-		parent.Call("insertBefore", frag, getChildByIndex(parent, index))
-	*/
 }
 
 func diffAttributes(a, b js.Value) Patches {
