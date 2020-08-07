@@ -131,3 +131,23 @@ func CallbackN(fn func(res []js.Value) interface{}) js.Func {
 	})
 	return cb
 }
+
+// Check ...
+func Check(promise js.Value) (res js.Value, err error) {
+	ch := make(chan bool)
+	promise.Call("then",
+		Callback1(func(r js.Value) interface{} {
+			res = r
+			close(ch)
+			return nil
+		}),
+	).Call("catch",
+		Callback1(func(res js.Value) interface{} {
+			err = fmt.Errorf(res.String())
+			close(ch)
+			return nil
+		}),
+	)
+	<-ch
+	return
+}
