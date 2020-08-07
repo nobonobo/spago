@@ -1,5 +1,7 @@
 # SpaGo
 
+Frontend tool-kit for Gopher
+
 ## Feature
 
 - No dependencies on other packages.
