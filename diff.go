@@ -122,11 +122,15 @@ func diffAttributes(a, b js.Value) Patches {
 		vb, ok := attrsB[k]
 		if ok {
 			if !vb.Equal(va) {
-				patches = append(patches, patch{changeAttribute, []js.Value{a, js.ValueOf(k), vb}})
+				patches = append(patches, patch{changeAttribute,
+					[]js.Value{a, js.ValueOf(k), vb},
+				})
 			}
 			delete(attrsB, k)
 		} else {
-			patches = append(patches, patch{removeAttribute, []js.Value{a, js.ValueOf(k)}})
+			patches = append(patches, patch{removeAttribute,
+				[]js.Value{a, js.ValueOf(k)},
+			})
 		}
 	}
 	for k, vb := range attrsB {
