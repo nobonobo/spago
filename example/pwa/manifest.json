@@ -1,0 +1,16 @@
+{
+  "name": "PWA-Example1",
+  "short_name": "PWA-App1",
+  "description": "PWA Example Application",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#444444",
+  "theme_color": "#cccccc",
+  "icons": [
+    {
+      "src": "assets/favicon.png",
+      "purpose": "maskable any",
+      "sizes": "512x512"
+    }
+  ]
+}

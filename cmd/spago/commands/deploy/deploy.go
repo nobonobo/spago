@@ -36,16 +36,30 @@ func (c *Deploy) Usage() {
 // download ...
 func (c *Deploy) download(url, dst string) error {
 	log.Println(url, dst)
+	d, _ := filepath.Split(dst)
+	if _, err := os.Stat(d); os.IsNotExist(err) {
+		os.MkdirAll(d, 0o755)
+	}
 	resp, err := http.Get(url)
 	if err != nil {
 		return err
 	}
 	defer resp.Body.Close()
+	fp, err := os.Create(dst)
+	defer fp.Close()
+	if err != nil {
+		return err
+	}
 	b, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return err
 	}
-	_ = b
+	if _, err := fp.Write(b); err != nil {
+		return err
+	}
+	if err := fp.Sync(); err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -55,7 +69,7 @@ func (c *Deploy) Execute(args []string) error {
 		return err
 	}
 	c.destDir = c.FlagSet.Arg(0)
-	d, err := os.Getwd()
+	wd, err := os.Getwd()
 	if err != nil {
 		return err
 	}
@@ -67,12 +81,12 @@ func (c *Deploy) Execute(args []string) error {
 	dh := &server.DevHandler{
 		GoCmd:        "go",
 		WasmExecPath: filepath.Join(runtime.GOROOT(), "misc", "wasm", "wasm_exec.js"),
-		WorkDir:      d,
+		WorkDir:      wd,
 		TempDir:      tempDir,
 	}
 	if c.isTinyGo {
 		dh.GoCmd = "tinygo"
-		output, err := commands.RunCmd(d, nil, "tinygo", "env", "TINYGOROOT")
+		output, err := commands.RunCmd(wd, nil, "tinygo", "env", "TINYGOROOT")
 		if err != nil {
 			return err
 		}
