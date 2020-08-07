@@ -1,6 +1,7 @@
 package spago
 
 import (
+	"fmt"
 	"syscall/js"
 )
 
@@ -17,8 +18,8 @@ func (t text) apply(n *Node) {
 }
 
 // T is
-func T(s string) Markup {
-	return text(s)
+func T(s ...interface{}) Markup {
+	return text(fmt.Sprint(s...))
 }
 
 // ClassMap ...
