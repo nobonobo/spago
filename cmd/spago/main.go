@@ -14,10 +14,10 @@ import (
 
 func main() {
 	flag.Usage = func() {
-		fmt.Fprintf(os.Stderr, "Usage of wecty:\n")
+		fmt.Fprintf(os.Stderr, "Usage of spago:\n")
 		fmt.Fprintf(os.Stderr, "  commands:\n")
 		fmt.Fprintf(os.Stderr, "    new\t\tcomponent scafold\n")
-		fmt.Fprintf(os.Stderr, "    generate\thtml to go for wecty code generator\n")
+		fmt.Fprintf(os.Stderr, "    generate\thtml to go for spago code generator\n")
 		fmt.Fprintf(os.Stderr, "    server\tdevelopment http server\n")
 		fmt.Fprintf(os.Stderr, "    deploy\tdeploy static files\n")
 	}
