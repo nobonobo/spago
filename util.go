@@ -6,6 +6,25 @@ import (
 	"syscall/js"
 )
 
+type wrapper func()
+
+func (fn wrapper) Release() {
+	fn()
+}
+
+// Bind ...
+func Bind(node js.Value, name string, callback func(res js.Value)) Releaser {
+	fn := js.FuncOf(func(this js.Value, args []js.Value) interface{} {
+		callback(args[0])
+		return nil
+	})
+	node.Call("addEventListener", name, fn)
+	return wrapper(func() {
+		node.Call("removeEventListener", name, fn)
+		fn.Release()
+	})
+}
+
 // SetTitle sets the title of the document.
 func SetTitle(title string) {
 	document.Set("title", title)

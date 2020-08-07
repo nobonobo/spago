@@ -30,3 +30,8 @@ type Mounter interface {
 type Unmounter interface {
 	Unmount()
 }
+
+// Releaser ...
+type Releaser interface {
+	Release()
+}
