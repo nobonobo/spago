@@ -139,7 +139,7 @@ func (w wrappedError) Error() string {
 }
 
 func (w wrappedError) JSValue() js.Value {
-	return w
+	return js.Value(w)
 }
 
 // Await ...
