@@ -132,8 +132,8 @@ func CallbackN(fn func(res []js.Value) interface{}) js.Func {
 	return cb
 }
 
-// Check ...
-func Check(promise js.Value) (res js.Value, err error) {
+// Await ...
+func Await(promise js.Value) (res js.Value, err error) {
 	ch := make(chan bool)
 	promise.Call("then",
 		Callback1(func(r js.Value) interface{} {
