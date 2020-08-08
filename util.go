@@ -135,7 +135,7 @@ func CallbackN(fn func(res []js.Value) interface{}) js.Func {
 type wrappedError js.Value
 
 func (w wrappedError) Error() string {
-	return js.Value(w).Call("tostring").String()
+	return js.Value(w).Call("toString").String()
 }
 
 func (w wrappedError) JSValue() js.Value {
