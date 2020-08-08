@@ -132,6 +132,16 @@ func CallbackN(fn func(res []js.Value) interface{}) js.Func {
 	return cb
 }
 
+type wrappedError js.Value
+
+func (w wrappedError) Error() string {
+	return w.String()
+}
+
+func (w wrappedError) JSValue() js.Value {
+	return w
+}
+
 // Await ...
 func Await(promise js.Value) (res js.Value, err error) {
 	ch := make(chan bool)
@@ -143,7 +153,7 @@ func Await(promise js.Value) (res js.Value, err error) {
 		}),
 	).Call("catch",
 		Callback1(func(res js.Value) interface{} {
-			err = fmt.Errorf(res.String())
+			err = wrappedError(res)
 			close(ch)
 			return nil
 		}),
