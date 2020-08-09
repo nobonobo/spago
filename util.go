@@ -132,6 +132,11 @@ func CallbackN(fn func(res []js.Value) interface{}) js.Func {
 	return cb
 }
 
+// S ...
+func S(s ...interface{}) string {
+	return fmt.Sprint(s...)
+}
+
 type wrappedError js.Value
 
 func (w wrappedError) Error() string {

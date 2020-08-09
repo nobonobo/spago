@@ -10,14 +10,21 @@ import (
 	"golang.org/x/net/html"
 )
 
-var prop = regexp.MustCompile(`^{{(.+)}}$`)
+var (
+	prop = regexp.MustCompile(`^{{(.+)}}$`)
+	values = regexp.MustCompile(`{{([^}]+)}}`)
+)
 
-func replaceValue(s string) (string, bool) {
+func parseValue(s string) (string, bool) {
 	props := prop.FindStringSubmatch(s)
 	if len(props) > 1 {
 		return props[1], true
 	}
 	return s, false
+}
+
+func replaceValues(t, s string) string {
+	return fmt.Sprintf("spago.%s(`%s`)", t, values.ReplaceAllString(s, "`, spago.S($1), `"))
 }
 
 // Converter ...
@@ -91,26 +98,22 @@ func (c *Converter) attrs(attrSlice []attr, indent int) string {
 		case strings.HasPrefix(k, "@"):
 			name := k[1:]
 			if len(name) > 0 {
-				p, ok := replaceValue(v)
+				p, ok := parseValue(v)
 				if !ok {
 					log.Panicf("event value format expected @%s=\"{{c.Func}}\": got %q", name, v)
 				}
 				c.Methods[name] = p
 				res = append(res, fmt.Sprintf("\n%sspago.Event(%q, %s),", tab0, name, p))
 			} else {
-				p, ok := replaceValue(v)
+				p, ok := parseValue(v)
 				if !ok {
 					log.Panicf("event value format expected @%s=\"{{raw}}\": got %q", name, v)
 				}
 				res = append(res, fmt.Sprintf("\n%s%s,", tab0, p))
 			}
 		default:
-			p, ok := replaceValue(v)
-			if !ok {
-				res = append(res, fmt.Sprintf("\n%sspago.A(%q, %q),", tab0, k, v))
-			} else {
-				res = append(res, fmt.Sprintf("\n%sspago.A(%q, %s),", tab0, k, p))
-			}
+			s := replaceValues("S", v)
+			res = append(res, fmt.Sprintf("\n%sspago.A(%q, %s),", tab0, k, s))
 		}
 	}
 	if len(res) == 0 {
@@ -145,12 +148,8 @@ func (c *Converter) generate(w io.Writer, r io.Reader) (err error) {
 					fmt.Fprintf(w, "\n%s%s,", tab[:len(tab)-1], t)
 					continue
 				}
-				p, ok := replaceValue(t)
-				if !ok {
-					fmt.Fprintf(w, "\n%sspago.T(%q),", tab, t)
-				} else {
-					fmt.Fprintf(w, "\n%s%s,", tab, p)
-				}
+				s := replaceValues("T", t)
+				fmt.Fprintf(w, "\n%s%s,", tab, s)
 			}
 		case html.StartTagToken:
 			tab := strings.Repeat("\t", indent)
@@ -181,9 +180,9 @@ func (c *Converter) generate(w io.Writer, r io.Reader) (err error) {
 			}
 			fmt.Fprintf(w, "%s%s%s", tab, e, a)
 			if len(t) > 0 {
-				p, ok := replaceValue(t)
+				p, ok := parseValue(t)
 				if !ok {
-					fmt.Fprintf(w, "\n%sspago.T(%q),", tab, t)
+					fmt.Fprintf(w, "\n%s%s,", tab, replaceValues("T", t))
 				} else {
 					fmt.Fprintf(w, "\n%s%s,", tab, p)
 				}
