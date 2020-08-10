@@ -8,11 +8,6 @@ import (
 	"github.com/nobonobo/spago"
 )
 
-var (
-	window   = js.Global()
-	document = window.Get("document")
-)
-
 // Sub ...
 type Sub struct {
 	spago.Core
@@ -76,6 +71,6 @@ func main() {
 	spago.AddStylesheet("https://unpkg.com/spectre.css/dist/spectre.min.css")
 	spago.AddStylesheet("https://unpkg.com/spectre.css/dist/spectre-exp.min.css")
 	spago.AddStylesheet("https://unpkg.com/spectre.css/dist/spectre-icons.min.css")
-	spago.Render(document.Get("body"), &Top{})
+	spago.RenderBody(&Top{})
 	select {}
 }
