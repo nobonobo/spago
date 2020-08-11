@@ -1,10 +1,16 @@
-package spago
+package router
 
 import (
 	"fmt"
 	"net/url"
 	"path"
 	"syscall/js"
+
+	"github.com/nobonobo/spago"
+)
+
+var (
+	document = js.Global().Get("document")
 )
 
 func parseHash(s string) (*url.URL, error) {
@@ -24,7 +30,7 @@ func parseHash(s string) (*url.URL, error) {
 
 // GetURL ...
 func GetURL() *url.URL {
-	u, _ := parseHash(global.Get("location").Get("href").String())
+	u, _ := parseHash(js.Global().Get("location").Get("href").String())
 	return u
 }
 
@@ -69,7 +75,7 @@ func (r *Router) onHashChange(this js.Value, args []js.Value) interface{} {
 	if oldURL.String() != newURL.String() {
 		if err := r.Navigate(newURL.String()); err != nil {
 			println(err)
-			RenderBody(NotFoundPage())
+			spago.RenderBody(NotFoundPage())
 		}
 	}
 	return nil
@@ -90,29 +96,29 @@ func (r *Router) Start() error {
 	return r.Navigate(r.current.String())
 }
 
-// NewRouter ...
-func NewRouter() *Router {
+// New ...
+func New() *Router {
 	r := &Router{f: map[string]func(string){}, d: map[string]func(string){}}
 	r.current = GetURL()
-	global.Call("addEventListener", "hashchange", js.FuncOf(r.onHashChange))
+	js.Global().Call("addEventListener", "hashchange", js.FuncOf(r.onHashChange))
 	return r
 }
 
 type defaultNotFoundPage struct {
-	Core
+	spago.Core
 	key string
 }
 
-func (c *defaultNotFoundPage) Render() HTML {
-	return Tag("body", Tag("h1", T("Not Found: "+c.key)))
+func (c *defaultNotFoundPage) Render() spago.HTML {
+	return spago.Tag("body", spago.Tag("h1", spago.T("Not Found: "+c.key)))
 }
 
 // NotFoundPage ...
-func NotFoundPage() Component {
+func NotFoundPage() spago.Component {
 	return &defaultNotFoundPage{key: GetURL().String()}
 }
 
 // Navigate ...
 func Navigate(s string) {
-	global.Get("location").Set("href", "#"+s)
+	js.Global().Get("location").Set("href", "#"+s)
 }
