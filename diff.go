@@ -50,7 +50,7 @@ func without(s []js.Value, value js.Value) []js.Value {
 }
 
 func remove(args ...js.Value) {
-	console.Call("log", "remove node:", args[0])
+	//console.Call("log", "remove node:", args[0])
 	parent := args[0].Get("parentNode")
 	if parent.IsNull() {
 		parent.Call("removeChild", args[0])
@@ -59,7 +59,7 @@ func remove(args ...js.Value) {
 
 func replace(args ...js.Value) {
 	from, to := args[0], args[1]
-	console.Call("log", "replace node:", from, to)
+	//console.Call("log", "replace node:", from, to)
 	parent := from.Get("parentNode")
 	if parent.IsNull() {
 		parent.Call("replaceChild", to, from)
@@ -68,7 +68,7 @@ func replace(args ...js.Value) {
 
 func insert(args ...js.Value) {
 	parent, node, index := args[0], args[1], args[2]
-	console.Call("log", "insert node:", parent, node, index)
+	//console.Call("log", "insert node:", parent, node, index)
 	if !parent.IsNull() {
 		if !index.Equal(js.ValueOf(-1)) {
 			parent.Call("removeChild", node)
@@ -81,19 +81,19 @@ func insert(args ...js.Value) {
 
 func changeAttribute(args ...js.Value) {
 	node, attr, value := args[0], args[1], args[2]
-	console.Call("log", "change attr:", node, attr, value)
+	//console.Call("log", "change attr:", node, attr, value)
 	node.Call("setAttribute", attr, value)
 }
 
 func removeAttribute(args ...js.Value) {
 	node, attr := args[0], args[1]
-	console.Call("log", "remove attr:", node, attr)
+	//console.Call("log", "remove attr:", node, attr)
 	node.Call("removeAttribute", attr)
 }
 
 func changeProperty(args ...js.Value) {
 	node, prop, value := args[0], args[1], args[2]
-	console.Call("log", "change prop:", node, prop, value)
+	//console.Call("log", "change prop:", node, prop, value)
 	node.Set(prop.String(), value)
 }
 
