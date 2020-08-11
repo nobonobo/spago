@@ -1,7 +1,6 @@
 package spago
 
 import (
-	"fmt"
 	"syscall/js"
 )
 
@@ -157,21 +156,23 @@ func diffChildren(a, b js.Value) Patches {
 	remainA := childNodesA[:]
 	remainB := childNodesB[:]
 	patches := Patches{}
-	insertPatches := Patches{}
-	for ia, ca := range childNodesA {
-		if ca.Get("id").Truthy() {
-			similar := b.Call("querySelector", fmt.Sprintf("[id=\"%s\"]", ca.Get("id").String()))
-			if !similar.IsNull() {
-				index := getNodeIndex(similar)
-				patches = append(patches, Diff(ca, similar)...)
-				if index != ia {
-					insertPatches = append(insertPatches, patch{insert, []js.Value{a, ca, js.ValueOf(index)}})
+	/*
+		insertPatches := Patches{}
+		for ia, ca := range childNodesA {
+			if ca.Get("id").Truthy() {
+				similar := b.Call("querySelector", fmt.Sprintf("[id=\"%s\"]", ca.Get("id").String()))
+				if !similar.IsNull() {
+					index := getNodeIndex(similar)
+					patches = append(patches, Diff(ca, similar)...)
+					if index != ia {
+						insertPatches = append(insertPatches, patch{insert, []js.Value{a, ca, js.ValueOf(index)}})
+					}
+					remainA = without(remainA, ca)
+					remainB = without(remainB, childNodesB[index])
 				}
-				remainA = without(remainA, ca)
-				remainB = without(remainB, childNodesB[index])
 			}
 		}
-	}
+	*/
 	remain := append([]js.Value{}, remainB...)
 	for ia, ca := range remainA {
 		if ia >= len(remainB) {
@@ -185,7 +186,8 @@ func diffChildren(a, b js.Value) Patches {
 	for _, c := range remain {
 		patches = append(patches, patch{insert, []js.Value{a, c, js.ValueOf(-1)}})
 	}
-	return append(patches, insertPatches...)
+	//return append(patches, insertPatches...)
+	return patches
 }
 
 // Diff ...
