@@ -98,12 +98,18 @@ type Releaser interface {
 	Release()
 }
 
-// ReleaserFunc ...
-type ReleaserFunc func()
+type wrapper struct {
+	fn func()
+}
 
 // Release ...
-func (fn ReleaserFunc) Release() {
-	fn()
+func (w *wrapper) Release() {
+	w.fn()
+}
+
+// ReleaserFunc ...
+func ReleaserFunc(fn func()) Releaser {
+	return &wrapper{fn: fn}
 }
 
 // Bind ...
