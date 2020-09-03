@@ -13,3 +13,17 @@ Frontend tool-kit for Gopher
 - TinyGo supported.
 - Commandline tool included.
 - HTML-like DSL translate to Go-Code.
+
+## Install
+
+Library
+
+```shell
+GOOS=js GOARCH=wasm go get github.com/nobonobo/spago
+```
+
+Command-line tool
+
+```shell
+go get github.com/nobonobo/spago/cmd/spago
+```
