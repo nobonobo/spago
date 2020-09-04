@@ -2,7 +2,7 @@ package dispatcher
 
 type Action int
 
-var registered map[Action][]func(){}
+var registered = map[Action][]func(){}
 
 // Register ...
 func Register(a Action, callback func()) {
