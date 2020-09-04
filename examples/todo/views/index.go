@@ -3,7 +3,7 @@ package views
 import (
 	"github.com/nobonobo/spago"
 
-	"todo/store"
+	"github.com/nobonobo/spago/examples/todo/store"
 )
 
 //go:generate spago generate -c Index -p views index.html

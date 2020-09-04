@@ -7,8 +7,8 @@ import (
 	"github.com/nobonobo/spago/dispatcher"
 	"github.com/nobonobo/spago/router"
 
-	"todo/actions"
-	"todo/store"
+	"github.com/nobonobo/spago/examples/todo/actions"
+	"github.com/nobonobo/spago/examples/todo/store"
 )
 
 //go:generate spago generate -c EntryDialog -p components entrydialog.html

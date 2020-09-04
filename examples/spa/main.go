@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/nobonobo/spago"
+	"github.com/nobonobo/spago/router"
 
 	"github.com/nobonobo/spago/examples/spa/views"
 )
@@ -19,20 +20,20 @@ func main() {
 		time.Sleep(1 * time.Second)
 		runtime.GC()
 	}()
-	router := spago.NewRouter()
-	router.Handle("/login", func(key string) {
-		log.Println(spago.GetURL())
+	r := router.New()
+	r.Handle("/login", func(key string) {
+		log.Println(router.GetURL())
 		spago.SetTitle("Login")
 		spago.RenderBody(&views.Login{})
 	})
-	router.Handle("/", func(key string) {
-		log.Println(spago.GetURL())
+	r.Handle("/", func(key string) {
+		log.Println(router.GetURL())
 		spago.SetTitle("Top")
 		spago.RenderBody(&views.Top{})
 	})
-	if err := router.Start(); err != nil {
+	if err := r.Start(); err != nil {
 		println(err)
-		spago.RenderBody(spago.NotFoundPage())
+		spago.RenderBody(router.NotFoundPage())
 	}
 	select {}
 }

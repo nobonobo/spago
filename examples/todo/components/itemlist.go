@@ -2,7 +2,8 @@ package components
 
 import (
 	"log"
-	"todo/store"
+
+	"github.com/nobonobo/spago/examples/todo/store"
 
 	"github.com/nobonobo/spago"
 )

@@ -2,7 +2,7 @@ package components
 
 import (
 	"github.com/nobonobo/spago"
-	"todo/store"
+	"github.com/nobonobo/spago/examples/todo/store"
 )
 
 // Render ...

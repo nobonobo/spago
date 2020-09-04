@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"github.com/nobonobo/spago"
+	"github.com/nobonobo/spago/router"
 )
 
 // Header ...
@@ -25,13 +26,13 @@ func (c *Header) Render() spago.HTML {
 			),
 			spago.Tag("a",
 				spago.A("class", "btn btn-link"),
-				spago.ClassMap{"disabled": spago.GetURL().String() == "/"},
+				spago.ClassMap{"disabled": router.GetURL().String() == "/"},
 				spago.A("href", "#/"),
 				spago.T("Top"),
 			),
 			spago.Tag("a",
 				spago.A("class", "btn btn-link"),
-				spago.ClassMap{"disabled": spago.GetURL().String() == "/login"},
+				spago.ClassMap{"disabled": router.GetURL().String() == "/login"},
 				spago.A("href", "#/login"),
 				spago.T("Login"),
 			),

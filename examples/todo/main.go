@@ -4,8 +4,8 @@ import (
 	"github.com/nobonobo/spago"
 	"github.com/nobonobo/spago/dispatcher"
 
-	"todo/actions"
-	"todo/views"
+	"github.com/nobonobo/spago/examples/todo/actions"
+	"github.com/nobonobo/spago/examples/todo/views"
 )
 
 var top = &views.Index{}

@@ -2,7 +2,7 @@ package views
 
 import (
 	"github.com/nobonobo/spago"
-	"todo/components"
+	"github.com/nobonobo/spago/examples/todo/components"
 )
 
 // Render ...
