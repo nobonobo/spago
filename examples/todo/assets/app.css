@@ -1,0 +1,28 @@
+.navbar {
+  box-shadow: lightgrey 2px 2px 2px;
+  padding: 1rem;
+}
+
+.navbar-brand {
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+.container {
+  padding: 1rem;
+}
+
+.check-tile-icon {
+  align-content: space-around;
+  align-items: center;
+  background: #5755d9;
+  border-radius: 0.1rem;
+  color: #fff;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+  -ms-flex-line-pack: distribute;
+  font-size: 1.2rem;
+  height: 2rem;
+  width: 2rem;
+}

@@ -1,0 +1,26 @@
+<import>todo/store</import>
+<div class="modal" id="entry-dialog">
+  <a href="#close" class="modal-overlay" aria-label="Close"></a>
+  <form class="modal-container" @submit="{{c.OnRegisterClick}}">
+    <div class="modal-header">
+      <a href="#/" class="btn btn-clear float-right" aria-label="Close"></a>
+      <div class="modal-title h5">ToDo Item</div>
+    </div>
+    <div class="modal-body">
+      <div class="content">
+        <input
+          type="text"
+          name="title"
+          class="form-input"
+          value="{{store.Entry.Title}}"
+        />
+      </div>
+    </div>
+    <div class="modal-footer">
+      <div class="btn-group">
+        <button class="btn btn-primary">Register</button>
+        <a class="btn" href="#/">Cancel</a>
+      </div>
+    </div>
+  </form>
+</div>

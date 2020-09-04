@@ -1,0 +1,23 @@
+<div class="tile todo-item" id="{{c.Data.ID}}">
+  <div class="tile-icon">
+    <button
+      class="btn s-circle"
+      style="width: 1.8rem"
+      @click="{{c.OnCompleteClick}}"
+    >
+      <i class="icon icon-check"></i>
+    </button>
+  </div>
+  <div class="tile-content">
+    <div class="tile-title">{{c.Data.Title}}</div>
+    <small class="tile-subtitle text-gray">{{c.Data.Created}}</small>
+  </div>
+  <div class="tile-action">
+    <button class="btn btn-link" @click="{{c.OnEditClick}}">
+      <i class="icon icon-edit"></i>
+    </button>
+    <button class="btn btn-link" @click="{{c.OnDeleteClick}}">
+      <i class="icon icon-cross"></i>
+    </button>
+  </div>
+</div>
