@@ -1,6 +1,7 @@
 package spago
 
 import (
+	"log"
 	"syscall/js"
 )
 
@@ -49,16 +50,20 @@ func without(s []js.Value, value js.Value) []js.Value {
 }
 
 func remove(args ...js.Value) {
-	//console.Call("log", "remove node:", args[0])
+	if VerboseMode {
+		console.Call("log", "remove node:", args[0])
+	}
 	parent := args[0].Get("parentNode")
-	if parent.IsNull() {
+	if !parent.IsNull() {
 		parent.Call("removeChild", args[0])
 	}
 }
 
 func replace(args ...js.Value) {
 	from, to := args[0], args[1]
-	//console.Call("log", "replace node:", from, to)
+	if VerboseMode {
+		console.Call("log", "replace node:", from, to)
+	}
 	parent := from.Get("parentNode")
 	if parent.IsNull() {
 		parent.Call("replaceChild", to, from)
@@ -67,7 +72,9 @@ func replace(args ...js.Value) {
 
 func insert(args ...js.Value) {
 	parent, node, index := args[0], args[1], args[2]
-	//console.Call("log", "insert node:", parent, node, index)
+	if VerboseMode {
+		console.Call("log", "insert node:", parent, node, index)
+	}
 	if !parent.IsNull() {
 		if !index.Equal(js.ValueOf(-1)) {
 			parent.Call("removeChild", node)
@@ -80,19 +87,25 @@ func insert(args ...js.Value) {
 
 func changeAttribute(args ...js.Value) {
 	node, attr, value := args[0], args[1], args[2]
-	//console.Call("log", "change attr:", node, attr, value)
+	if VerboseMode {
+		console.Call("log", "change attr:", node, attr, value)
+	}
 	node.Call("setAttribute", attr, value)
 }
 
 func removeAttribute(args ...js.Value) {
 	node, attr := args[0], args[1]
-	//console.Call("log", "remove attr:", node, attr)
+	if VerboseMode {
+		console.Call("log", "remove attr:", node, attr)
+	}
 	node.Call("removeAttribute", attr)
 }
 
 func changeProperty(args ...js.Value) {
 	node, prop, value := args[0], args[1], args[2]
-	//console.Call("log", "change prop:", node, prop, value)
+	if VerboseMode {
+		console.Call("log", "change prop:", node, prop, value)
+	}
 	node.Set(prop.String(), value)
 }
 
@@ -153,40 +166,26 @@ func diffProperties(a, b js.Value) Patches {
 func diffChildren(a, b js.Value) Patches {
 	childNodesA := getChildNodes(a)
 	childNodesB := getChildNodes(b)
+	if VerboseMode && len(childNodesA) != len(childNodesB) {
+		log.Println("nodes-A:", childNodesA)
+		log.Println("nodes-B:", childNodesB)
+	}
 	remainA := childNodesA[:]
 	remainB := childNodesB[:]
 	patches := Patches{}
-	/*
-		insertPatches := Patches{}
-		for ia, ca := range childNodesA {
-			if ca.Get("id").Truthy() {
-				similar := b.Call("querySelector", fmt.Sprintf("[id=\"%s\"]", ca.Get("id").String()))
-				if !similar.IsNull() {
-					index := getNodeIndex(similar)
-					patches = append(patches, Diff(ca, similar)...)
-					if index != ia {
-						insertPatches = append(insertPatches, patch{insert, []js.Value{a, ca, js.ValueOf(index)}})
-					}
-					remainA = without(remainA, ca)
-					remainB = without(remainB, childNodesB[index])
-				}
-			}
-		}
-	*/
 	remain := append([]js.Value{}, remainB...)
-	for ia, ca := range remainA {
+	for ia := range remainA {
 		if ia >= len(remainB) {
-			patches = append(patches, patch{remove, []js.Value{ca}})
+			patches = append(patches, patch{remove, []js.Value{remainA[ia]}})
 			continue
 		}
 		cb := remainB[ia]
-		patches = append(patches, Diff(ca, cb)...)
+		patches = append(patches, Diff(remainA[ia], cb)...)
 		remain = without(remain, cb)
 	}
-	for _, c := range remain {
-		patches = append(patches, patch{insert, []js.Value{a, c, js.ValueOf(-1)}})
+	for i := range remain {
+		patches = append(patches, patch{insert, []js.Value{a, remain[i], js.ValueOf(-1)}})
 	}
-	//return append(patches, insertPatches...)
 	return patches
 }
 

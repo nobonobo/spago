@@ -10,6 +10,9 @@ var (
 	document = global.Get("document")
 	console  = js.Global().Get("console")
 	mounts   []Mounter
+
+	// VerboseMode ...
+	VerboseMode bool
 )
 
 // Tag markup
