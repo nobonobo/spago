@@ -1,6 +1,9 @@
 package spago
 
-import "syscall/js"
+import (
+	"fmt"
+	"syscall/js"
+)
 
 type none struct{}
 
@@ -64,4 +67,9 @@ func (c *component) apply(n *Node) {
 // C ....
 func C(c Component) Markup {
 	return &component{Component: c}
+}
+
+// S ...
+func S(s ...interface{}) string {
+	return fmt.Sprint(s...)
 }

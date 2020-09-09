@@ -76,8 +76,3 @@ func LoadModule(names []string, url string) <-chan js.Value {
 	document.Get("head").Call("appendChild", script)
 	return ch
 }
-
-// S ...
-func S(s ...interface{}) string {
-	return fmt.Sprint(s...)
-}
