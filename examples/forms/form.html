@@ -1,0 +1,46 @@
+<body>
+  <div class="card p-centered" style="max-width: 640px">
+    <div class="card-header">
+      <div class="card-title h5">フォームサンプル</div>
+    </div>
+    <div class="card-body">
+      <form class="form-horizontal" @submit="{{c.OnSubmit}}">
+        <div class="form-group">
+          <div class="col-2 col-sm-12">
+            <label class="form-label">Name</label>
+          </div>
+          <div class="col-10 col-sm-12">
+            <input type="text" name="name" class="form-input" />
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-2 col-sm-12">
+            <label class="form-label">Memo</label>
+          </div>
+          <div class="col-10 col-sm-12">
+            <textarea name="memo" class="form-input"></textarea>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-2 col-sm-12">
+            <label class="form-label">Options</label>
+          </div>
+          <div class="col-10 col-sm-12">
+            <select class="form-select" name="options" multiple="">
+              <option>Choose an option</option>
+              <option>Slack</option>
+              <option>Skype</option>
+              <option>Hipchat</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-2 col-sm-12"></div>
+          <div class="col-10 col-sm-12">
+            <button class="btn btn-primary">Submit</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</body>

@@ -71,13 +71,12 @@ func (c *Login) Render() spago.HTML {
 }
 
 // OnSubmit ...
-func (c *Login) OnSubmit(event js.Value) interface{} {
+func (c *Login) OnSubmit(event js.Value) {
 	event.Call("preventDefault")
 	log.Println("submit: login credential")
 	c.UserName = event.Get("target").Get("username").Get("value").String()
 	c.Password = event.Get("target").Get("password").Get("value").String()
 	spago.Rerender(c)
-	return nil
 }
 
 // Mount ...

@@ -19,7 +19,7 @@ type EntryDialog struct {
 }
 
 // OnRegisterClick ...
-func (c *EntryDialog) OnRegisterClick(ev js.Value) interface{} {
+func (c *EntryDialog) OnRegisterClick(ev js.Value) {
 	ev.Call("preventDefault")
 	title := ev.Get("target").Get("title").Get("value").String()
 	js.Global().Get("console").Call("log", title)
@@ -28,5 +28,4 @@ func (c *EntryDialog) OnRegisterClick(ev js.Value) interface{} {
 	store.Set(&dup)
 	router.Navigate("")
 	dispatcher.Dispatch(actions.Refresh)
-	return nil
 }

@@ -92,7 +92,8 @@ func (n *Node) html(bind bool) js.Value {
 	if bind {
 		for _, l := range n.listeners {
 			fn := js.FuncOf(func(this js.Value, args []js.Value) interface{} {
-				return l.Func(args[0])
+				l.Func(args[0])
+				return nil
 			})
 			binds = append(binds, binded{l.Name, fn})
 			jsv.Call("addEventListener", l.Name, fn)

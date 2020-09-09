@@ -59,11 +59,10 @@ func (c *Top) Render() spago.HTML {
 }
 
 // Update ...
-func (c *Top) Update(event js.Value) interface{} {
+func (c *Top) Update(event js.Value) {
 	log.Println("button click!")
 	c.index++
 	spago.Rerender(c)
-	return nil
 }
 
 func main() {

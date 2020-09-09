@@ -17,7 +17,7 @@ func main() {
 		log.Print(err)
 		return
 	}
-	obj := jsutil.Obj2Go(json)
+	obj := jsutil.JS2Go(json)
 	for k, v := range obj.(map[string]interface{}) {
 		log.Printf("key: %s, val:%v", k, v)
 	}

@@ -19,7 +19,9 @@ Frontend tool-kit for Gopher
 Library
 
 ```shell
-GOOS=js GOARCH=wasm go get github.com/nobonobo/spago
+go env -w GOOS=js GOARCH=wasm
+go get github.com/nobonobo/spago
+go env -u GOOS GOARCH
 ```
 
 Command-line tool

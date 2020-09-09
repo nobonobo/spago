@@ -161,7 +161,6 @@ func JS2Go(obj js.Value) interface{} {
 			res[key] = JS2Go(value)
 		}
 		return res
-		return obj
 	}
 }
 

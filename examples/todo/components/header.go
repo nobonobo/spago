@@ -19,9 +19,8 @@ type Header struct {
 }
 
 // OnNewClick ...
-func (c *Header) OnNewClick(ev js.Value) interface{} {
+func (c *Header) OnNewClick(ev js.Value) {
 	store.Entry = *store.New("タイトル")
 	dispatcher.Dispatch(actions.Refresh)
 	router.Navigate("entry-dialog")
-	return nil
 }

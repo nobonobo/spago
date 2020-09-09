@@ -24,12 +24,12 @@ type Item struct {
 }
 
 // OnCompleteClick ...
-func (c *Item) OnCompleteClick(ev js.Value) interface{} {
+func (c *Item) OnCompleteClick(ev js.Value) {
 	s := ev.Get("target").Call("closest", ".todo-item").Get("id").String()
 	id, err := strconv.Atoi(s)
 	if err != nil {
 		log.Print(err)
-		return nil
+		return
 	}
 	log.Println("complete:", id)
 	item := store.Get(id)
@@ -38,16 +38,15 @@ func (c *Item) OnCompleteClick(ev js.Value) interface{} {
 		store.Set(item)
 	}
 	dispatcher.Dispatch(actions.Refresh)
-	return nil
 }
 
 // OnEditClick ...
-func (c *Item) OnEditClick(ev js.Value) interface{} {
+func (c *Item) OnEditClick(ev js.Value) {
 	s := ev.Get("target").Call("closest", ".todo-item").Get("id").String()
 	id, err := strconv.Atoi(s)
 	if err != nil {
 		log.Print(err)
-		return nil
+		return
 	}
 	log.Println("edit:", id)
 	item := store.Get(id)
@@ -56,19 +55,17 @@ func (c *Item) OnEditClick(ev js.Value) interface{} {
 		dispatcher.Dispatch(actions.Refresh)
 		router.Navigate("entry-dialog")
 	}
-	return nil
 }
 
 // OnDeleteClick ...
-func (c *Item) OnDeleteClick(ev js.Value) interface{} {
+func (c *Item) OnDeleteClick(ev js.Value) {
 	s := ev.Get("target").Call("closest", ".todo-item").Get("id").String()
 	id, err := strconv.Atoi(s)
 	if err != nil {
 		log.Print(err)
-		return nil
+		return
 	}
 	log.Println("delete:", id)
 	store.Del(id)
 	dispatcher.Dispatch(actions.Refresh)
-	return nil
 }

@@ -44,7 +44,7 @@ func (a AttrMap) apply(n *Node) {
 // listener ...
 type listener struct {
 	Name string
-	Func func(ev js.Value) interface{}
+	Func func(ev js.Value)
 }
 
 func (e listener) apply(n *Node) {
@@ -52,7 +52,7 @@ func (e listener) apply(n *Node) {
 }
 
 // Event ...
-func Event(name string, fn func(ev js.Value) interface{}) Markup {
+func Event(name string, fn func(ev js.Value)) Markup {
 	return &listener{name, fn}
 }
 
