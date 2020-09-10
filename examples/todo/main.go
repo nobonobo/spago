@@ -11,7 +11,7 @@ import (
 var top = &views.Index{}
 
 func init() {
-	dispatcher.Register(actions.Refresh, func() {
+	dispatcher.Register(actions.Refresh, func(args ...interface{}) {
 		spago.Rerender(top)
 	})
 }
