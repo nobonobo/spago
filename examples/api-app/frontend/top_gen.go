@@ -12,5 +12,8 @@ func (c *Top) Render() spago.HTML {
 			spago.Event("click", c.OnClickButton),
 			spago.T(`getNow()`),
 		),
+		spago.Tag("label", 
+			spago.T(``, spago.S(c.Now), ``),
+		),
 	)
 }
