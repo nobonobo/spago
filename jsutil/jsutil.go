@@ -10,21 +10,21 @@ var (
 	object = global.Get("Object")
 )
 
-// JS2Bytes ...
+// JS2Bytes convert from TypedArray for JS to byte slice for Go.
 func JS2Bytes(dv js.Value) []byte {
 	b := make([]byte, dv.Get("byteLength").Int())
 	js.CopyBytesToGo(b, global.Get("Uint8Array").New(dv.Get("buffer")))
 	return b
 }
 
-// Bytes2JS ...
+// Bytes2JS convert from byte slice for Go to Uint8Array for JS.
 func Bytes2JS(b []byte) js.Value {
 	res := global.Get("Uint8Array").New(len(b))
 	js.CopyBytesToJS(res, b)
 	return res
 }
 
-// Callback0 ...
+// Callback0 make auto-release callback without params.
 func Callback0(fn func() interface{}) js.Func {
 	var cb js.Func
 	cb = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
@@ -34,7 +34,7 @@ func Callback0(fn func() interface{}) js.Func {
 	return cb
 }
 
-// Callback1 ...
+// Callback1 make auto-release callback with 1 param.
 func Callback1(fn func(res js.Value) interface{}) js.Func {
 	var cb js.Func
 	cb = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
@@ -44,7 +44,7 @@ func Callback1(fn func(res js.Value) interface{}) js.Func {
 	return cb
 }
 
-// CallbackN ...
+// CallbackN make auto-release callback with multiple params.
 func CallbackN(fn func(res []js.Value) interface{}) js.Func {
 	var cb js.Func
 	cb = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
@@ -54,7 +54,7 @@ func CallbackN(fn func(res []js.Value) interface{}) js.Func {
 	return cb
 }
 
-// RequestAnimationFrame ...
+// RequestAnimationFrame function call for 30 or 60 fps.
 func RequestAnimationFrame(callback func(float64)) int {
 	var cb js.Func
 	cb = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
@@ -77,7 +77,7 @@ func (w wrappedError) JSValue() js.Value {
 	return js.Value(w)
 }
 
-// Await ...
+// Await equivalent for js await statement.
 func Await(promise js.Value) (res js.Value, err error) {
 	ch := make(chan bool)
 	promise.Call("then",
@@ -116,7 +116,7 @@ func ReleaserFunc(fn func()) Releaser {
 	return &wrapper{fn: fn}
 }
 
-// Bind ...
+// Bind event bind and return releaser.
 func Bind(node js.Value, name string, callback func(res js.Value)) Releaser {
 	fn := js.FuncOf(func(this js.Value, args []js.Value) interface{} {
 		callback(args[0])
@@ -129,12 +129,12 @@ func Bind(node js.Value, name string, callback func(res js.Value)) Releaser {
 	})
 }
 
-// IsArray ...
+// IsArray checking value is array type.
 func IsArray(item js.Value) bool {
 	return array.Call("isArray", item).Bool()
 }
 
-// JS2Go ...
+// JS2Go JS values convert to Go values.
 func JS2Go(obj js.Value) interface{} {
 	switch obj.Type() {
 	default:
@@ -164,7 +164,7 @@ func JS2Go(obj js.Value) interface{} {
 	}
 }
 
-// Form2Go ...
+// Form2Go retrieve form values from form element.
 func Form2Go(form js.Value) map[string]interface{} {
 	obj := map[string]interface{}{}
 	formData := global.Get("FormData").New(form)
@@ -187,7 +187,7 @@ func Form2Go(form js.Value) map[string]interface{} {
 	return obj
 }
 
-// Fetch ...
+// Fetch wrapper fetch function.
 func Fetch(url string, opt map[string]interface{}) (js.Value, error) {
 	return Await(global.Call("fetch", url, opt))
 }

@@ -28,25 +28,25 @@ func parseHash(s string) (*url.URL, error) {
 	return u, nil
 }
 
-// GetURL ...
+// GetURL get current location.
 func GetURL() *url.URL {
 	u, _ := parseHash(js.Global().Get("location").Get("href").String())
 	return u
 }
 
-// Router ...
+// Router definition of router.
 type Router struct {
 	current *url.URL
 	f       map[string]func(key string)
 	d       map[string]func(key string)
 }
 
-// Current ...
+// Current get current URL.
 func (r *Router) Current() *url.URL {
 	return r.current
 }
 
-// Navigate ...
+// Navigate navigate to URL.
 func (r *Router) Navigate(s string) error {
 	newURL, err := url.Parse(s)
 	if err != nil {
@@ -81,7 +81,7 @@ func (r *Router) onHashChange(this js.Value, args []js.Value) interface{} {
 	return nil
 }
 
-// Handle ...
+// Handle register handler with key prefix.
 func (r *Router) Handle(key string, fn func(key string)) {
 	d, f := path.Split(key)
 	if len(f) > 0 {
@@ -91,12 +91,12 @@ func (r *Router) Handle(key string, fn func(key string)) {
 	r.d[d] = fn
 }
 
-// Start ...
+// Start router.
 func (r *Router) Start() error {
 	return r.Navigate(r.current.String())
 }
 
-// New ...
+// New create new router instance.
 func New() *Router {
 	r := &Router{f: map[string]func(string){}, d: map[string]func(string){}}
 	r.current = GetURL()
@@ -113,12 +113,12 @@ func (c *defaultNotFoundPage) Render() spago.HTML {
 	return spago.Tag("body", spago.Tag("h1", spago.T("Not Found: "+c.key)))
 }
 
-// NotFoundPage ...
+// NotFoundPage pre-defined 404 page.
 func NotFoundPage() spago.Component {
 	return &defaultNotFoundPage{key: GetURL().String()}
 }
 
-// Navigate ...
+// Navigate global navigate function.
 func Navigate(s string) {
 	js.Global().Get("location").Set("href", "#"+s)
 }

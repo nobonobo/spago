@@ -29,3 +29,7 @@ Command-line tool
 ```shell
 go get github.com/nobonobo/spago/cmd/spago
 ```
+
+## Getting Started
+
+[Getting Started](https://github.com/nobonobo/spago/wiki/Getting-Started)
