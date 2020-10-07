@@ -44,8 +44,8 @@ func LoadScript(url string) {
 }
 
 // LoadModule ...
-func LoadModule(names []string, url string) <-chan js.Value {
-	ch := make(chan js.Value)
+func LoadModule(names []string, url string) []js.Value {
+	ch := make(chan js.Value, len(names))
 	var sendFunc js.Func
 	sendFunc = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
 		ch <- args[0]
@@ -74,5 +74,9 @@ func LoadModule(names []string, url string) <-chan js.Value {
 		)),
 	).html(true)
 	document.Get("head").Call("appendChild", script)
-	return ch
+	res := make([]js.Value, 0, len(names))
+	for v := range ch {
+		res = append(res, v)
+	}
+	return res
 }
