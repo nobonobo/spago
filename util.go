@@ -11,7 +11,7 @@ func SetTitle(title string) {
 	document.Set("title", title)
 }
 
-// AddMeta ...
+// AddMeta add meta tag
 func AddMeta(name, content string) {
 	meta := document.Call("createElement", "meta")
 	meta.Set("name", name)
@@ -27,7 +27,7 @@ func AddStylesheet(url string) {
 	document.Get("head").Call("appendChild", link)
 }
 
-// LoadScript ...
+// LoadScript synchronous javascript loader
 func LoadScript(url string) {
 	ch := make(chan bool)
 	script := document.Call("createElement", "script")
@@ -43,7 +43,7 @@ func LoadScript(url string) {
 	<-ch
 }
 
-// LoadModule ...
+// LoadModule equivalent `import {'name1', 'name2', ...} from 'url'`
 func LoadModule(names []string, url string) []js.Value {
 	ch := make(chan js.Value, len(names))
 	var sendFunc js.Func
@@ -79,4 +79,36 @@ func LoadModule(names []string, url string) []js.Value {
 		res = append(res, v)
 	}
 	return res
+}
+
+// LoadModuleAs equivalent `import * as 'name' from 'url'`
+func LoadModuleAs(name string, url string) js.Value {
+	ch := make(chan js.Value, 1)
+	var sendFunc js.Func
+	sendFunc = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
+		ch <- args[0]
+		return nil
+	})
+	var closeFunc js.Func
+	closeFunc = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
+		defer sendFunc.Release()
+		defer closeFunc.Release()
+		close(ch)
+		return nil
+	})
+	js.Global().Set("__spago_send__", sendFunc)
+	js.Global().Set("__spago_close__", closeFunc)
+	lines := []string{}
+	lines = append(lines, fmt.Sprintf("__spago_send__(%s);", name))
+	lines = append(lines, "__spago_close__();")
+	script := Tag("script",
+		A("type", "module"),
+		T(fmt.Sprintf("import * as %s from %q;\n%s",
+			name,
+			url,
+			strings.Join(lines, "\n"),
+		)),
+	).html(true)
+	document.Get("head").Call("appendChild", script)
+	return <-ch
 }
