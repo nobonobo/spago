@@ -56,17 +56,26 @@ func Event(name string, fn func(ev js.Value)) Markup {
 	return &listener{name, fn}
 }
 
-type component struct {
-	Component
+// Markups ...
+type Markups []Markups
+
+func (c Markups) apply(n *Node) {
+	for _, v := range c {
+		v.apply(n)
+	}
 }
 
-func (c *component) apply(n *Node) {
-	n.children = append(n.children, c)
+type components []Component
+
+func (c components) apply(n *Node) {
+	for _, v := range c {
+		n.children = append(n.children, v)
+	}
 }
 
 // C ....
-func C(c Component) Markup {
-	return &component{Component: c}
+func C(c ...Component) Markup {
+	return components(c)
 }
 
 // S ...
