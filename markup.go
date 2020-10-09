@@ -57,7 +57,7 @@ func Event(name string, fn func(ev js.Value)) Markup {
 }
 
 // Markups ...
-type Markups []Markups
+type Markups []Markup
 
 func (c Markups) apply(n *Node) {
 	for _, v := range c {

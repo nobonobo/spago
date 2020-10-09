@@ -73,20 +73,18 @@ func (n *Node) html(bind bool) js.Value {
 		switch v := c.(type) {
 		case HTML:
 			jsv.Call("appendChild", v.html(bind))
-		case components:
-			for _, cmp := range v {
-				if um, ok := cmp.(Unmounter); ok {
-					if !cmp.get().target.IsUndefined() {
-						um.Unmount()
-					}
+		case Component:
+			if um, ok := v.(Unmounter); ok {
+				if !v.get().target.IsUndefined() {
+					um.Unmount()
 				}
-				if m, ok := cmp.(Mounter); ok {
-					mounts = append(mounts, m)
-				}
-				html := cmp.Render()
-				jv := html.html(bind)
-				jsv.Call("appendChild", jv)
 			}
+			if m, ok := v.(Mounter); ok {
+				mounts = append(mounts, m)
+			}
+			html := v.Render()
+			jv := html.html(bind)
+			jsv.Call("appendChild", jv)
 		}
 	}
 	binds := []binded{}
