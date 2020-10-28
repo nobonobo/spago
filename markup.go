@@ -27,12 +27,12 @@ func (a attribute) apply(n *Node) {
 	n.attributes = append(n.attributes, a)
 }
 
-// A ...
+// A attribute markup
 func A(k string, v interface{}) Markup {
 	return attribute{Key: k, Value: v}
 }
 
-// AttrMap ...
+// AttrMap map sttyle attribute markup
 type AttrMap map[string]interface{}
 
 func (a AttrMap) apply(n *Node) {
@@ -51,12 +51,12 @@ func (e listener) apply(n *Node) {
 	n.listeners = append(n.listeners, e)
 }
 
-// Event ...
+// Event event markup
 func Event(name string, fn func(ev js.Value)) Markup {
 	return &listener{name, fn}
 }
 
-// Markups ...
+// Markups List of Markup type
 type Markups []Markup
 
 func (c Markups) apply(n *Node) {
@@ -73,12 +73,36 @@ func (c components) apply(n *Node) {
 	}
 }
 
-// C ....
+// C make Components
 func C(c ...Component) Markup {
 	return components(c)
 }
 
-// S ...
+// S make string from Stringer objects
 func S(s ...interface{}) string {
 	return fmt.Sprint(s...)
+}
+
+type unsafeHTML struct {
+	Core
+	content string
+}
+
+func (m *unsafeHTML) apply(n *Node) {
+	n.children = append(n.children, m)
+}
+
+func (m *unsafeHTML) html(bind bool) js.Value {
+	div := document.Call("createElement", "div")
+	div.Set("innerHTML", m.content)
+	return div
+}
+
+func (m *unsafeHTML) Render() HTML {
+	return m
+}
+
+// UnsafeHTML make DOM-Elements from HTML string
+func UnsafeHTML(s string) Markup {
+	return &unsafeHTML{content: s}
 }
