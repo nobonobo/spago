@@ -50,6 +50,16 @@ func (n *Node) apply(nn *Node) {
 	nn.children = append(nn.children, n)
 }
 
+func appendChild(parent, children js.Value) {
+	if children.Get("constructor").Get("name").String() == "NodeList" {
+		for i := 0; i < chilgren.Length(); i++ {
+			parent.Call("appendChild", children.Index(i))
+		}
+		return
+	}
+	parent.Call("appendChild", children)
+}
+
 // Render ...
 func (n *Node) html(bind bool) js.Value {
 	var jsv js.Value
@@ -72,7 +82,7 @@ func (n *Node) html(bind bool) js.Value {
 	for _, c := range n.children {
 		switch v := c.(type) {
 		case HTML:
-			jsv.Call("appendChild", v.html(bind))
+			appendChild(jsv, v.html(bind))
 		case Component:
 			if um, ok := v.(Unmounter); ok {
 				if !v.get().target.IsUndefined() {
@@ -82,9 +92,7 @@ func (n *Node) html(bind bool) js.Value {
 			if m, ok := v.(Mounter); ok {
 				mounts = append(mounts, m)
 			}
-			html := v.Render()
-			jv := html.html(bind)
-			jsv.Call("appendChild", jv)
+			appendChild(jsv, v.Render().html(bind))
 		}
 	}
 	binds := []binded{}

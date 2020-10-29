@@ -95,7 +95,7 @@ func (m *unsafeHTML) apply(n *Node) {
 func (m *unsafeHTML) html(bind bool) js.Value {
 	div := document.Call("createElement", "div")
 	div.Set("innerHTML", m.content)
-	return div
+	return div.Get("childNodes")
 }
 
 func (m *unsafeHTML) Render() HTML {
