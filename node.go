@@ -52,8 +52,12 @@ func (n *Node) apply(nn *Node) {
 
 func appendChild(parent, children js.Value) {
 	if children.Get("constructor").Get("name").String() == "NodeList" {
+		nodes := []js.Value{}
 		for i := 0; i < children.Length(); i++ {
-			parent.Call("appendChild", children.Index(i))
+			nodes = append(nodes, children.Index(i))
+		}
+		for _, v := range nodes {
+			parent.Call("appendChild", v)
 		}
 		return
 	}
