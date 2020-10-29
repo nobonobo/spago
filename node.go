@@ -52,7 +52,7 @@ func (n *Node) apply(nn *Node) {
 
 func appendChild(parent, children js.Value) {
 	if children.Get("constructor").Get("name").String() == "NodeList" {
-		for i := 0; i < chilgren.Length(); i++ {
+		for i := 0; i < children.Length(); i++ {
 			parent.Call("appendChild", children.Index(i))
 		}
 		return
