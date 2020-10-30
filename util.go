@@ -112,3 +112,14 @@ func LoadModuleAs(name string, url string) js.Value {
 	document.Get("head").Call("appendChild", script)
 	return <-ch
 }
+
+func expandNodes(v js.Value) []js.Value {
+	if v.Get("constructor").Get("name").String() == "NodeList" {
+		nodes := []js.Value{}
+		for i := 0; i < v.Length(); i++ {
+			nodes = append(nodes, v.Index(i))
+		}
+		return nodes
+	}
+	return []js.Value{v}
+}

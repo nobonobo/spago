@@ -40,11 +40,13 @@ func render(old js.Value, c Component) {
 		v.Unmount()
 	}
 	core.target = c.Render().html(true)
-	old.Get("parentNode").Call("replaceChild", core.target, old)
+	for _, v := range expandNodes(core.target) {
+		old.Get("parentNode").Call("replaceChild", v, old)
+	}
 	if v := old.Get("release"); !v.IsUndefined() {
 		v.Invoke()
 	}
-	old.Call("remove")
+	//old.Call("remove")
 }
 
 func mount() {
@@ -99,10 +101,14 @@ func Rerender(c Component) {
 		v.Unmount()
 	}
 	next := c.Render().html(true)
-	Diff(old, next).Do()
+	var patch Patches
+	for _, v := range expandNodes(next) {
+		patch = append(patch, Diff(old, v)...)
+		v.Call("release")
+	}
+	patch.Do()
 	if v, ok := c.(Mounter); ok {
 		mounts = append(mounts, v)
 	}
-	next.Call("release")
 	mount()
 }
