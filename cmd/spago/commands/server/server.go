@@ -76,7 +76,7 @@ func (s *Server) Execute(args []string) error {
 		return err
 	}
 	defer os.RemoveAll(tempDir)
-	l, err := net.Listen("tcp", ":8080")
+	l, err := net.Listen("tcp", s.addr)
 	if err != nil {
 		return err
 	}
