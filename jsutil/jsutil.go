@@ -63,15 +63,17 @@ func RequestAnimationFrame(callback func(dt float64)) chan bool {
 	lastTick := 0
 	cb = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
 		tick := args[0].Int()
-		dt := float64(tick-lastTick) / 1000.0
-		lastTick = tick
-		go callback(dt)
-		b, ok := <-ch
-		if !b || !ok {
-			global.Call("cancelAnimationFrame", lastID)
-			cb.Release()
-		}
-		lastID = global.Call("requestAnimationFrame", cb).Int()
+		go func() {
+			dt := float64(tick-lastTick) / 1000.0
+			lastTick = tick
+			callback(dt)
+			b, ok := <-ch
+			if !b || !ok {
+				global.Call("cancelAnimationFrame", lastID)
+				cb.Release()
+			}
+			lastID = global.Call("requestAnimationFrame", cb).Int()
+		}()
 		return nil
 	})
 	cb.Invoke(js.ValueOf(0.0))
