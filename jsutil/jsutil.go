@@ -55,28 +55,27 @@ func CallbackN(fn func(res []js.Value) interface{}) js.Func {
 }
 
 // RequestAnimationFrame function call for 30 or 60 fps.
-// return value: cancel function
-func RequestAnimationFrame(callback func(dt float64)) func() {
+// return value: tick chan
+func RequestAnimationFrame(callback func(dt float64)) chan bool {
+	ch := make(chan bool)
 	var cb js.Func
 	lastID := -1
 	lastTick := 0
-	terminate := false
 	cb = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
 		tick := args[0].Int()
 		dt := float64(tick-lastTick) / 1000.0
 		lastTick = tick
-		callback(dt)
-		if !terminate {
-			lastID = global.Call("requestAnimationFrame", cb).Int()
+		go callback(dt)
+		b, ok := <-ch
+		if !b || !ok {
+			global.Call("cancelAnimationFrame", lastID)
+			cb.Release()
 		}
-		return js.Undefined()
+		lastID = global.Call("requestAnimationFrame", cb).Int()
+		return nil
 	})
 	cb.Invoke(js.ValueOf(0.0))
-	return func() {
-		terminate = true
-		global.Call("cancelAnimationFrame", lastID)
-		cb.Release()
-	}
+	return ch
 }
 
 type wrappedError js.Value
