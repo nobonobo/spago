@@ -57,7 +57,7 @@ func CallbackN(fn func(res []js.Value) interface{}) js.Func {
 // RequestAnimationFrame function call for 30 or 60 fps.
 // return value: tick chan
 func RequestAnimationFrame(callback func(dt float64)) chan bool {
-	ch := make(chan bool)
+	ch := make(chan bool, 1)
 	var cb js.Func
 	lastID := -1
 	lastTick := 0
