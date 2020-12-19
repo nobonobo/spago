@@ -65,7 +65,7 @@ func RequestAnimationFrame(ch <-chan bool, callback func(dt float64)) {
 		go func() {
 			dt := float64(tick-lastTick) / 1000.0
 			lastTick = tick
-			callback(dt)
+			go callback(dt)
 			b, ok := <-ch
 			if !b || !ok {
 				global.Call("cancelAnimationFrame", lastID)
