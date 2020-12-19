@@ -58,13 +58,19 @@ func CallbackN(fn func(res []js.Value) interface{}) js.Func {
 // return value: cancel function
 func RequestAnimationFrame(callback func(dt float64)) func() {
 	var cb js.Func
+	lastID := -1
+	terminate := false
 	cb = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
 		callback(args[0].Float())
+		if !terminate {
+			lastID = global.Call("requestAnimationFrame", cb).Int()
+		}
 		return js.Undefined()
 	})
-	id := global.Call("requestAnimationFrame", cb)
+	cb.Invoke(cb, js.ValueOf(0.0))
 	return func() {
-		global.Call("cancelAnimationFrame", id)
+		terminate = true
+		global.Call("cancelAnimationFrame", lastID)
 		cb.Release()
 	}
 }
