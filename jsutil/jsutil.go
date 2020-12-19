@@ -55,16 +55,18 @@ func CallbackN(fn func(res []js.Value) interface{}) js.Func {
 }
 
 // RequestAnimationFrame function call for 30 or 60 fps.
-func RequestAnimationFrame(callback func(float64)) int {
+// return value: cancel function
+func RequestAnimationFrame(callback func(dt float64)) func() {
 	var cb js.Func
 	cb = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
-		cb.Release()
-		if callback != nil {
-			callback(args[0].Float())
-		}
+		callback(args[0].Float())
 		return js.Undefined()
 	})
-	return global.Call("requestAnimationFrame", cb).Int()
+	id := global.Call("requestAnimationFrame", cb)
+	return func() {
+		global.Call("cancelAnimationFrame", id)
+		cb.Release()
+	}
 }
 
 type wrappedError js.Value
