@@ -59,9 +59,13 @@ func CallbackN(fn func(res []js.Value) interface{}) js.Func {
 func RequestAnimationFrame(callback func(dt float64)) func() {
 	var cb js.Func
 	lastID := -1
+	lastTick := 0
 	terminate := false
 	cb = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
-		callback(args[0].Float())
+		tick := args[0].Int()
+		dt := float64(lastTick-tick) / 1000.0
+		lastTick = tick
+		callback(dt)
 		if !terminate {
 			lastID = global.Call("requestAnimationFrame", cb).Int()
 		}
