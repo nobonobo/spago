@@ -67,7 +67,7 @@ func RequestAnimationFrame(callback func(dt float64)) func() {
 		}
 		return js.Undefined()
 	})
-	cb.Invoke(cb, js.ValueOf(0.0))
+	cb.Invoke(js.ValueOf(0.0))
 	return func() {
 		terminate = true
 		global.Call("cancelAnimationFrame", lastID)
