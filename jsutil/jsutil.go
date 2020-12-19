@@ -63,7 +63,7 @@ func RequestAnimationFrame(callback func(dt float64)) func() {
 	terminate := false
 	cb = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
 		tick := args[0].Int()
-		dt := float64(lastTick-tick) / 1000.0
+		dt := float64(tick-lastTick) / 1000.0
 		lastTick = tick
 		callback(dt)
 		if !terminate {
