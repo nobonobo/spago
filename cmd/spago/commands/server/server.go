@@ -11,7 +11,6 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
-	"runtime"
 	"strings"
 
 	"github.com/nobonobo/spago/cmd/spago/commands"
@@ -65,11 +64,7 @@ func (s *Server) Execute(args []string) error {
 	log.Println("listen and serve:", s.addr)
 	for p, u := range s.urls.m {
 		log.Printf("proxy: %q => %q", p, u.String())
-		http.Handle(p,
-			http.StripPrefix(strings.TrimRight(p, "/"),
-				httputil.NewSingleHostReverseProxy(u),
-			),
-		)
+		http.Handle(p, httputil.NewSingleHostReverseProxy(u))
 	}
 	tempDir, err := ioutil.TempDir("", "gobuild")
 	if err != nil {
@@ -85,14 +80,19 @@ func (s *Server) Execute(args []string) error {
 		return err
 	}
 	dh := &DevHandler{
-		GoCmd:        "go",
-		WasmExecPath: filepath.Join(runtime.GOROOT(), "misc", "wasm", "wasm_exec.js"),
-		WorkDir:      d,
-		TempDir:      tempDir,
+		GoCmd:   "go",
+		WorkDir: d,
+		TempDir: tempDir,
 	}
-	if s.isTinyGo {
+	if !s.isTinyGo {
+		output, err := commands.RunCmd(d, nil, dh.GoCmd, "env", "GOROOT")
+		if err != nil {
+			return err
+		}
+		dh.WasmExecPath = filepath.Join(strings.TrimSpace(output), "misc", "wasm", "wasm_exec.js")
+	} else {
 		dh.GoCmd = "tinygo"
-		output, err := commands.RunCmd(d, nil, "tinygo", "env", "TINYGOROOT")
+		output, err := commands.RunCmd(d, nil, dh.GoCmd, "env", "TINYGOROOT")
 		if err != nil {
 			return err
 		}
